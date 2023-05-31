@@ -40,39 +40,75 @@ lista_equipo = [item['equipo'] for item in item_list_equipo]
 ######################################################################
 
 ######################################################################
-df_proyectos_equipo = pd.DataFrame(columns=['Tipo','Proyecto']+lista_equipo)
+## Elegir la persona y la campaña
+col1, col2 = st.columns(2)
+with col1:
+   persona = st.selectbox(
+    'Elegir Persona',
+    personas)
+
+with col2:
+   campana = st.selectbox(
+    'Elegir Campaña',
+    campanas)
+item_list_horas = list(container_horas.read_all_items())
+item_list_proyectos = list(container_proy.read_all_items())
+lista_proyectos_persona = [item['nombre'] for item in item_list_proyectos if persona in item['equipo']]
+lista_proyectos_horas = [item for item in item_list_horas if item['equipo'] == persona and item['campana']==campana]
+
+## Crear el dataframe para completar
+df_horas_real = pd.DataFrame(columns = ['Proyecto','S1','S2','S3','S4'])
 cont = 0
-for item in item_list_proy:
-    proyecto_id = item['id']
-    if 'Run' in proyecto_id:
-        tipo = 'Run'
+for proy in lista_proyectos_persona:
+    lista_horas_bd = [item for item in lista_proyectos_horas if item['nombre'] == proy]
+    if len(lista_horas_bd) == 0:
+        lista_temp = [proy] + [0,0,0,0]
     else:
-        tipo = 'Pared'
-    nombre = item['nombre']
-    equipo = item['equipo']
-    lista_participacion_proyecto = []
-    for per in lista_equipo:
-        if per in equipo:
-            lista_participacion_proyecto.append(1)
-        else:
-            lista_participacion_proyecto.append(0)
-    lista_temp = [tipo,nombre] + lista_participacion_proyecto
-    df_proyectos_equipo.loc[cont] = lista_temp
+        lista_temp = [proy] + [item for item in lista_proyectos_horas if item['nombre'] == proy][0]['horas_campana']
+    df_horas_real.loc[cont] = lista_temp
     cont = cont + 1
-    
-for item in item_list_pot_proy:
-    tipo = item['estado']
-    nombre = item['nombre']
-    equipo = item['equipo']
-    lista_participacion_proyecto = []
-    for per in lista_equipo:
-        if per in equipo:
-            lista_participacion_proyecto.append(1)
-        else:
-            lista_participacion_proyecto.append(0)
-    lista_temp = [tipo,nombre] + lista_participacion_proyecto
-    df_proyectos_equipo.loc[cont] = lista_temp
+output_df_horas_real = st.experimental_data_editor(df_horas_real)
+
+## Crear el proceso para registrar las horas reales en la base de datos
+submit_button_pared = st.button("Registrar Horas Pared")
+if submit_button_pared:
+    for index, row in output_df_horas_real.iterrows():
+        dictionario_horas = {
+            'id':persona+'-'+row['Proyecto']+'-'+campana,
+            'equipo':persona,
+            'nombre':row['Proyecto'],
+            'campana':campana,
+            'horas_campana':[str(row['S1']),str(row['S2']),str(row['S3']),str(row['S4'])]}
+        container_horas.upsert_item(dictionario_horas)
+    st.success('Se actualizó correctamente las horas de proyectos de pared', icon="✅")
+
+## Lo mismo pero para los proyectos para estimar
+st.write('Proyectos para Estimar')
+
+item_list_pot_proy = list(container_potproy.read_all_items())
+lista_proyectos_estimar = [item for item in item_list_pot_proy if persona in item['equipo'] and item['estado'] == 'Estimar']
+
+df_horas_real_estimar = pd.DataFrame(columns = ['Proyecto','S1','S2','S3','S4'])
+cont = 0
+for proy in lista_proyectos_estimar:
+    lista_horas_bd = [item for item in lista_proyectos_horas if item['nombre'] == proy['nombre']]
+    if len(lista_horas_bd) == 0:
+        lista_temp = [proy['nombre']] + [0,0,0,0]
+    else:
+        lista_temp = [proy['nombre']] + [item for item in lista_proyectos_horas if item['nombre'] == proy['nombre']][0]['horas_campana']
+    df_horas_real_estimar.loc[cont] = lista_temp
     cont = cont + 1
 
-st.markdown('### Lista de todos los proyectos del equipo')
-st.dataframe(df_proyectos_equipo)
+output_df_horas_estimar = st.experimental_data_editor(df_horas_real_estimar)
+
+submit_button_estimar = st.button("Registrar Horas Estimacion")
+if submit_button_estimar:
+    for index, row in output_df_horas_estimar.iterrows():
+        dictionario_horas = {
+            'id':persona+'-'+row['Proyecto']+'-'+campana,
+            'equipo':persona,
+            'nombre':row['Proyecto'],
+            'campana':campana,
+            'horas_campana':[str(row['S1']),str(row['S2']),str(row['S3']),str(row['S4'])]}
+        container_horas.upsert_item(dictionario_horas)
+    st.success('Se actualizó correctamente las horas de estimacion', icon="✅")
