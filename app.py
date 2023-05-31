@@ -16,7 +16,6 @@ st.markdown(hide_table_row_index, unsafe_allow_html=True)
 
 ######################################################################
 ## DATABASE
-# conectarnos a la instancia
 endpoint = "https://registrohoras.documents.azure.com:443/"
 key = 'i4Jsp0MGQdqQY4QQvhJKM7SIJ2856GrzPmycWQjJOgEWDS93o8zjLwA1neNtGXkcaRyLc2PbdXGfACDbb06FEg=='
 client = CosmosClient(endpoint, key)
@@ -24,19 +23,26 @@ DATABASE_NAME = 'controlhoras'
 CONTAINER_NAME_PROYECTOS = 'Proyectos'
 CONTAINER_NAME_POTENCIALESPROYECTOS = 'PotencialesProyectos'
 CONTAINER_NAME_HORAS = 'RegistroHoras'
-CONTAINER_EQUIPO = 'Equipo'######################################################################
+CONTAINER_EQUIPO = 'Equipo'
 
-######################################################################
 database = client.get_database_client(DATABASE_NAME)
 container_proy = database.get_container_client(CONTAINER_NAME_PROYECTOS)
 container_potproy = database.get_container_client(CONTAINER_NAME_POTENCIALESPROYECTOS)
 container_horas = database.get_container_client(CONTAINER_NAME_HORAS)
 container_equipo = database.get_container_client(CONTAINER_EQUIPO)
+######################################################################
 
+######################################################################
+## Cargar los datos del equipo y crear la lista de campañas
 item_list_equipo = list(container_equipo.read_all_items())
-item_list_pot_proy = list(container_potproy.read_all_items())
-item_list_proy = list(container_proy.read_all_items())
-lista_equipo = [item['equipo'] for item in item_list_equipo]
+df_equipo = pd.DataFrame(columns=['id','equipo','puesto','tipo_equipo','estado'])
+cont = 0
+for item in item_list_equipo:
+    df_equipo.loc[cont] = [item['id'],item['equipo'],item['puesto'],item['tipo_equipo'],item['estado']]
+    cont = cont + 1
+#df_equipo = pd.read_csv('data/equipo.csv',delimiter=';')
+personas = list(df_equipo['equipo'].unique())
+campanas = ['C4','C5','C6','C7','C8','C9','C10','C11','C12','C13']
 ######################################################################
 
 ######################################################################
