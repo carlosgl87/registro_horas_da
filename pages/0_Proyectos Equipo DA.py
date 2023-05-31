@@ -60,6 +60,11 @@ for item in item_list_pot_proy:
     df_proyectos_equipo.loc[cont] = lista_temp
     cont = cont + 1
 
+options_equipo = st.multiselect(
+    '¿Que personas del equipo quieres ver?',
+    lista_equipo,
+    lista_equipo)
+
 options_proyectos = st.multiselect(
     '¿Que tipo de proyectos quieres ver?',
     ['Pared', 'Run', 'Idea', 'Estimar'],
@@ -67,6 +72,5 @@ options_proyectos = st.multiselect(
 
 df_proyectos_equipo = df_proyectos_equipo[df_proyectos_equipo['Tipo'].isin(options_proyectos)]
 
-print(options_proyectos)
 
 st.dataframe(df_proyectos_equipo)
