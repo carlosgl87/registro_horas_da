@@ -1,0 +1,17 @@
+﻿id;Equipo;Puesto;Tipo_Equipo;Estado
+EQUIPO-DA-0001;Maria de la Guarda;Data Analyst;Staff;Activo
+EQUIPO-DA-0002;Luis Rey;Data Scientist;Staff;Activo
+EQUIPO-DA-0003;Eduardo De La Rosa;Data Engineer;Staff;Activo
+EQUIPO-DA-0004;Lisbet Enciso;Data Scientist;Staff;Activo
+EQUIPO-DA-0005;Junior Valentin;Data Scientist;Staff;Activo
+EQUIPO-DA-0006;Zully Bejarano;Data Analyst;Staff;Activo
+EQUIPO-DA-0007;Frank Perez;Data Engineer;Staff;Activo
+EQUIPO-DA-0008;Oscar Chero;Data Engineer;Staff;Activo
+EQUIPO-DA-0009;Alexander Atencio;Data Engineer;Staff;Activo
+EQUIPO-DA-0010;Jose Puente (c);Data Analyst;Consultor;Activo
+EQUIPO-DA-0011;Luis Heredia (c);Data Engineer;Consultor;Activo
+EQUIPO-DA-0012;Cristian Sopan (c);Data Engineer;Consultor;Activo
+EQUIPO-DA-0013;Luis Alvarado (c);Data Analyst;Consultor;Activo
+EQUIPO-DA-0014;Kristhoffer Cruz (c);Data Analyst;Consultor;Activo
+EQUIPO-DA-0015;Carlos Cortez (c);Data Engineer;Consultor;Activo
+EQUIPO-DA-0016;Adolfo Espinoza (c);Data Engineer;Consultor;Activo
