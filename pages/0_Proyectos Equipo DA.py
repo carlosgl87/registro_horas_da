@@ -70,7 +70,7 @@ options_proyectos = st.multiselect(
     ['Pared', 'Run', 'Idea', 'Estimar'],
     ['Pared', 'Run', 'Idea', 'Estimar'])
 
-df_proyectos_equipo = df_proyectos_equipo[df_proyectos_equipo['Tipo'].isin(options_proyectos)]
+df_proyectos_equipo = df_proyectos_equipo[df_proyectos_equipo['Tipo'].isin(options_proyectos)][options_equipo]
 
 
 st.dataframe(df_proyectos_equipo)
