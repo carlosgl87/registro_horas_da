@@ -3,6 +3,11 @@ import streamlit as st
 from azure.cosmos import exceptions, CosmosClient, PartitionKey
 import json
 
+st.set_page_config(
+    page_title="Registro Horas",
+    page_icon="⏰",
+)
+
 ######################################################################
 ## CSS to inject contained in a string
 hide_table_row_index = """
